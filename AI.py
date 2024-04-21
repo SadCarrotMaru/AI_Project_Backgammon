@@ -34,6 +34,29 @@ class Nod:
 
 class Euristics():
 
+   def endgame_simple_euristic(board):
+      value_max = 0
+      value_min = 0
+      white_pieces = 0
+      black_pieces = 0
+      for i in range(1, 25):
+        if len(board[i]) > 0:
+           if(board[i][0] == 'W'):
+              segm = Euristics.get_segment_for_position(i, 'MAX')
+              if segm >= 7:
+                 value_max += 3
+              white_pieces += len(board[i])
+           else:
+              segm = Euristics.get_segment_for_position(i, 'MIN')
+              if segm >= 7:
+                 value_min += 3
+              black_pieces += len(board[i])
+      
+      value_max += (15- white_pieces) * 10
+      value_min += (15- black_pieces) * 10
+
+      return (value_max - value_min) * 0.01
+ 
    def get_segment_for_position(position, player):
       start_1 = 24
       start_2 = 22
@@ -54,36 +77,55 @@ class Euristics():
     value_max = 0
     value_min = 0
 
+    last_poz_white = 0  
+    last_poz_black = 25
+    white_pieces = 0
+    black_pieces = 0
+    for i in range(1, 25):
+       if len(board[i]) > 0:
+         if(board[i][0] == 'W'):
+            white_pieces += len(board[i])
+            last_poz_white = max(last_poz_white, i)
+         else:
+            black_pieces += len(board[i])
+            last_poz_black = min(last_poz_black, i)
+
+    if last_poz_black > last_poz_white:
+      return Euristics.endgame_simple_euristic(board)
+      
+    value_max += 4 * (15 - white_pieces)  # Piese scoase
+    value_min += 4 * (15 - black_pieces)
+    
     risk = Euristics.get_risk(board) # DE ADAUGAT CU CAT E MAI APROAPE DE SCOS SI E DESCOPERIT CU ATAT E MAI RAU, LEG RISK POSITION
 
     for i in range(1, 25):
         if len(board[i]) > 0:
-            segment = Euristics.get_segment_for_position(i, 'MAX')
-            #print(f" {i} -- > {segment}")
             if board[i][0] == 'W':
-                if len(board[i]) == 1:
-                    #print(risk[i] * 0.5 * segment * math.log(segment+1))
-                    value_max -= risk[i] * 0.5 * segment * math.log(segment+1)
-                if len(board[i]) >= 2:
-                    value_max += 3
-                    if len(board[i]) > 4:
+               segment = Euristics.get_segment_for_position(i, 'MAX')
+               #print(f" {i} -- > {segment}")
+               if len(board[i]) == 1:
+                     #print(risk[i] * 0.5 * segment * math.log(segment+1))
+                  value_max -= risk[i] * 0.2 * segment * math.log(segment+1)
+               if len(board[i]) >= 2:
+                  value_max += 3
+                  if len(board[i]) > 4:
                         value_max -= 0.4*(len(board[i]) - 4)
-               
-                value_max += Euristics.get_segment_for_position(i, 'MAX') * 0.2
+                  
+               value_max += segment * 0.25
 
             else:
                 segment = Euristics.get_segment_for_position(i, 'MIN')
                 #print(segment)
                 if len(board[i]) == 1:
                   # print(risk[i] * 0.5 * segment * math.log(segment+1))
-                   value_min -= risk[i] * 0.5 * segment * math.log(segment+1)
+                   value_min -= risk[i] * 0.2 * segment * math.log(segment+1)
 
                 if len(board[i]) >= 2:
                     value_min += 3
                     if len(board[i]) > 4:
                         value_min -= 0.4*(len(board[i]) - 4)
 
-                value_min += Euristics.get_segment_for_position(i, 'MIN') * 0.25
+                value_min += segment * 0.25
 
     count_blocked_min = 0
     count_blocked_max = 0
@@ -98,10 +140,10 @@ class Euristics():
              count_blocked_max +=1
     
     if count_blocked_max > 0:
-      value_max -= count_blocked_max * math.log(count_blocked_max) * 2
+      value_max -= count_blocked_max * math.log(count_blocked_max) * 1
 
     if count_blocked_min > 0:
-      value_min -= count_blocked_min * math.log(count_blocked_min) * 2
+      value_min -= count_blocked_min * math.log(count_blocked_min) * 1
 
     #print(f" max -> {count_blocked_max} min -> {count_blocked_min}")
 
