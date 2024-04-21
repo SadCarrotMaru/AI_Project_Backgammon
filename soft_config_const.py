@@ -1,0 +1,73 @@
+WIDTH = 673
+HEIGHT = 673
+REFRESH_RATE = 60
+
+#colors
+WHITE = (255, 255, 255)
+CYAN = (128, 255, 255)
+BLACK = (0, 0 ,0)
+DARK_BLUE = (0, 0, 100)
+TRIANGLE_TYPE_BLACK = (205, 133, 63)
+TRIANGLE_TYPE_WHITE = (210, 180, 140)
+RED = (255, 0, 0)
+SKY_BLUE = (122, 241, 245)
+BOARD_BROWN = (132, 60, 36)
+
+#piece configuration
+RADIUS = 23.5
+
+#Dices
+SEED_DICE_1 = 2195218
+SEED_DICE_2 = 5215
+
+POS_X_DICE_1 = 176.5
+POS_Y_DICE_1 = 336.5
+POS_X_DICE_2 = 494.5
+POS_Y_DICE_2 = 336.5
+BUTTON_ROLL_X = 336
+BUTTON_ROLL_Y = 336
+
+CENTER_PIECES_X = 336.5
+CENTER_PIECES_Y = 336.5
+
+#board setup
+
+PIECES_POSITION_INITIAL = [[] for _ in range (26)]
+PIECES_POSITION_INITIAL[1]=['B','B']
+PIECES_POSITION_INITIAL[6]=['W','W','W','W','W']
+PIECES_POSITION_INITIAL[8]=['W','W','W']
+PIECES_POSITION_INITIAL[12]=['B','B','B','B','B']
+PIECES_POSITION_INITIAL[13]=['W','W','W','W','W']
+PIECES_POSITION_INITIAL[17]=['B','B','B']
+PIECES_POSITION_INITIAL[19]=['B','B','B','B','B']
+PIECES_POSITION_INITIAL[24]=['W','W']
+
+ALL_POSSIBLE_ROLLS = [[1,1,1,1],[1,2],[1,3],[1,4],[1,5],[1,6],[2,2,2,2],[2,3],[2,4],[2,5],[2,6],[3,3,3,3],[3,4],[3,5],[3,6],[4,4,4,4],[4,5],[4,6],[5,5,5,5],[5,6],[6,6,6,6]]
+
+
+''' DEBUG - HELL'S SPAWN
+PIECES_POSITION_INITIAL = [[] for _ in range (26)]
+PIECES_POSITION_INITIAL[1]=['W','W','W']
+PIECES_POSITION_INITIAL[2]=['W','W','W']
+PIECES_POSITION_INITIAL[3]=['W','W']
+PIECES_POSITION_INITIAL[4]=['W','W']
+PIECES_POSITION_INITIAL[5]=['W','W']
+PIECES_POSITION_INITIAL[6]=['W','W']
+PIECES_POSITION_INITIAL[24]=['B','B','B']
+PIECES_POSITION_INITIAL[23]=['B','B','B']
+PIECES_POSITION_INITIAL[22]=['B','B']
+PIECES_POSITION_INITIAL[21]=['B','B']
+PIECES_POSITION_INITIAL[20]=['B','B']
+PIECES_POSITION_INITIAL[19]=['B','B']
+'''
+#PIECES_POSITION_INITIAL = [['B'], ['B', 'B'], [], ['W', 'W'], [], ['W', 'W'], ['W', 'W'], [], ['W', 'W'], [], ['W', 'W'], [], ['B', 'B', 'B', 'B'], ['W', 'W','W'], [], [], ['W'], [], [], ['B', 'B', 'B'], ['B', 'B', 'B'], [], ['B', 'B'], [], ['W'], []]
+
+
+
+
+
+LOWEST_POINT = 636 # The lowest y point on the table where a piece can be placed
+HIGHEST_POINT = 36 # ~   highest    ~
+BOARD_SEP = 12
+SUP_TRIANGLE_END = 300
+INF_TRIANGLE_END = 371
