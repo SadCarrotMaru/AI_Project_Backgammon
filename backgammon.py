@@ -31,6 +31,8 @@ class Application():
         self.WHITE_IS_ABLE_TO_RETRIEVE = False
         self.WINNER = None
         self.WIN_TRIGGERED = False
+        self.score_player_1 = 0
+        self.score_player_2 = 0
 
 
     def AI_update(self):
@@ -116,7 +118,69 @@ class Application():
         self.all_sprites.update()
         self.all_sprites.draw(self.screen)
 
+    def show_final_screen(self) -> None:
+        self.clock.tick(60)
+        color_ = const.BLACK
+        op_color_  = const.WHITE
+        if self.WINNER == 'WHITE':
+            color_=const.WHITE
+            op_color_ = const.BLACK
+
+        self.screen.fill(color_)
+        pygame.init()
+        font = pygame.font.SysFont(None, 50)
+        text_surface = font.render(f"{self.WINNER} won the game!", True, op_color_)
+        text_rect = text_surface.get_rect()
+        text_rect.center = (const.WIDTH/2, 200)
+        self.screen.blit(text_surface, text_rect) 
+
+        text_surface = font.render(f"The score is {self.score_player_1} - {self.score_player_2}", True, op_color_)
+        text_rect = text_surface.get_rect()
+        text_rect.center = (const.WIDTH/2, 250)
+        self.screen.blit(text_surface, text_rect) 
+
+        button_width = 200
+        button_height = 50
+        button_x = (const.WIDTH - button_width) // 2
+        button_y = 500
+        button_color = (128, 128, 128)
+        button_text = "Play Again"
+        
+        pygame.draw.rect(self.screen, button_color, (button_x, button_y, button_width, button_height))
+        text_surface = font.render(button_text, True, op_color_)
+        text_rect = text_surface.get_rect()
+        text_rect.center = (button_x + button_width / 2, button_y + button_height / 2)
+        self.screen.blit(text_surface, text_rect)
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                sys.exit()
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                mouse_pos = pygame.mouse.get_pos()
+                if button_x <= mouse_pos[0] <= button_x + button_width and button_y <= mouse_pos[1] <= button_y + button_height:
+                    self.need_to_roll = True
+                    self.currently_highlighted = []
+                    self.current_piece_selected = None
+                    self.rolls = []
+                    self.need_to_update_rolls = False
+                    self.turn = 'B'
+                    self.BLACK_IS_ABLE_TO_RETRIEVE = False
+                    self.WHITE_IS_ABLE_TO_RETRIEVE = False
+                    self.WINNER = None
+                    self.WIN_TRIGGERED = False
+                    self.board = Board(const.PIECES_POSITION_INITIAL)
+
+
+        pygame.display.flip()
+   
+        
+    
     def update(self) -> None:
+        
+        if self.WIN_TRIGGERED == True:
+            self.show_final_screen()
+            return
+
         self.clock.tick(60)
         if self.turn == 'B':
             self.screen.fill(const.BLACK)
@@ -245,9 +309,19 @@ class Application():
         no_black_pieces = len(self.all_sprites) - no_white_pieces
         
         if no_white_pieces == 0:
+            if self.WIN_TRIGGERED == False:
+                if no_black_pieces == 15:
+                    self.score_player_1 +=2
+                else:
+                    self.score_player_1 +=1
             self.WIN_TRIGGERED = True
             self.WINNER = 'WHITE'
         elif no_black_pieces == 0:
+            if self.WIN_TRIGGERED == False:
+                if no_white_pieces == 15:
+                    self.score_player_2 +=2
+                else:
+                    self.score_player_2 +=1
             self.WIN_TRIGGERED = True
             self.WINNER = 'BLACK'
 
