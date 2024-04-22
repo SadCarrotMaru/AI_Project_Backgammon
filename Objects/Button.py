@@ -2,6 +2,9 @@ import pygame
 
 class Button(pygame.sprite.Sprite):
     def __init__(self, pos_x, pos_y, text, color) -> None:
+        '''
+        Simple button class. Handles only the user interface.
+        '''
         pygame.init()
         super().__init__()
         self.value = 0

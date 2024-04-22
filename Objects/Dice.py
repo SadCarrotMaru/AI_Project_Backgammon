@@ -3,6 +3,9 @@ import random
 import os.path
 
 class Dice(pygame.sprite.Sprite):
+    '''
+    Anything related to the dices. User interface and the rolls
+    '''
     def __init__(self, pos_x, pos_y, seed) -> None:
         super().__init__()
         self.value = 0

@@ -7,6 +7,9 @@ class Virtual_App():
 
 
     def craft_state(self, state, position, destination):
+        '''
+        Given the move that will be done, modify the current layout to create the future state(board).
+        '''
         crafted_state = copy.deepcopy(state)
         piece_color = crafted_state[position][0]
         if destination != 0 and destination != 25:
@@ -25,6 +28,9 @@ class Virtual_App():
         return crafted_state
 
     def get_states_for_move(self, current_state):
+        '''
+        For every available move on the board checks all the existent states that can be reached using the rolls on that position.
+        '''
         states = []
         for i in range(0,26):
             possible_moves = self.Virtual.get_moves_for_position(i)
@@ -34,11 +40,18 @@ class Virtual_App():
         return states
     
     def get_states_for_roll(self, current_state, turn, roll):
+        '''
+        For the current roll gets all the possible states that can be reached with the current_state.
+        '''
         self.Virtual.switch_game_status(current_state, turn, [roll])
         return self.get_states_for_move(current_state)
 
 
-    def get_all_moves(self, current_state, turn, rolls): ## NEED TO REMOVE DUPLICATES
+    def get_all_moves(self, current_state, turn, rolls):
+        '''
+        This method will return a list containing every state that can be reached with a pair of dices rolled. The logic differs
+        from a double and a non-double rolled.
+        '''
         if len(rolls) == 4:
             possible_states_initial = [current_state]
             possible_states = []

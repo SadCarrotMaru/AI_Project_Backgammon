@@ -1,7 +1,10 @@
 import pygame
 import soft_config_const as const
 
-class Piece(pygame.sprite.Sprite): 
+class Piece(pygame.sprite.Sprite):
+    '''
+    Anything related to the interface for the pieces.
+    '''
     def __init__(self, color, radius, pos_x, pos_y, current_pos_on_board) -> None:
         super().__init__()
         if color == 'W':

@@ -13,6 +13,10 @@ from Objects.Board_triangle import Board_triangle
 
 class Application():
     def __init__(self, interface_true = False) -> None:
+        '''
+        Constructor for the main application class. The game will be played in this class and so it contains 
+        every variable there is needed to describe the status of the game.
+        '''
         self.clock = pygame.time.Clock()
         if interface_true == True: self.screen = pygame.display.set_mode((const.HEIGHT,const.WIDTH))
         self.bg = pygame.image.load("Assets/board.png")
@@ -35,7 +39,11 @@ class Application():
         self.score_player_2 = 0
 
 
-    def AI_update(self):
+    def AI_update(self) -> None:
+        '''
+        The update function which is called for the AI. If it's not its turn and it got called it has to roll the dices, and afterwards
+        it will return the status of the game so that it knows what board to predict a move for.
+        '''
         if self.turn == 'B' and self.need_to_roll == True: ## Reversed, B if it's White's turn and vice versa
             self.button_pressed()
         if self.turn == 'W' and self.need_to_update_rolls == False and self.need_to_roll == False:
@@ -43,7 +51,11 @@ class Application():
         return None, None
 
 
-    def switch_game_status(self, board_frames, turn, rolls):
+    def switch_game_status(self, board_frames, turn, rolls) -> None:
+        '''
+        This function helps as a utility function for its virtual instance in the AI. It emulates a board position so that it can use
+        some of the existent methods in the class.
+        '''
         self.board = Board(board_frames)
         self.board.update_board()
         self.turn = turn
@@ -57,6 +69,10 @@ class Application():
         self.WHITE_IS_ABLE_TO_RETRIEVE = self.able_to_retrieve_pieces('W')
 
     def get_moves_for_position(self, position) -> list:
+        '''
+        Also used for the AI. Given a position, it generates a virtual piece that is used to see what rolls can be used with a piece from
+        the given position.
+        '''
         possibilites = []
         if len(self.board.frames[position]) > 0 and self.board.frames[position][0] == self.turn:
             piece = Piece(self.turn, 0, 0, 0, position)
@@ -66,12 +82,18 @@ class Application():
 
 
     def update_board(self) -> None:
+        '''
+        One of the main update functions which handles the triangles from the board. (highlighted or not).
+        '''
         board_triangles = self.board.get_triangles()
         for triangle in board_triangles:
             triangle.display(self.screen)
 
 
     def not_in_blocked_state(self) -> bool:     
+        '''
+        Checks if there are any available moves for the player that has to move.
+        '''
         for sprite in self.all_sprites:
             if (self.turn == 'B' and sprite.color == const.BLACK) or (self.turn == 'W' and sprite.color == const.WHITE):
                 possibilites = len(self.get_possible_moves(sprite))
@@ -80,7 +102,13 @@ class Application():
         return False
 
     def update_dice(self) -> None:
-
+        '''
+        Update dice is also one of the main functions. The way it works is:
+            If the need to roll variable is true then a button that prompts the player to roll is displayed.
+            If that condition is satisfied then for a second after the player pressed the buttons, the dices will 'roll', generating
+            a random number every update. After a second, those final rolls are being cast into the game rolls and used afterwards
+            as the numbers that were rolled by the player.
+        '''
         if self.need_to_roll == True:
             self.screen.blit(self.button_roll.image, self.button_roll.rect)
 
@@ -100,7 +128,10 @@ class Application():
         self.screen.blit(self.dice_2.image, self.dice_2.rect) 
     
 
-    def able_to_retrieve_pieces(self, color):
+    def able_to_retrieve_pieces(self, color) -> None:
+        '''
+        Checks if the player with color 'color' is able to retrieve pieces (a.k.a all the pieces he has are in his home)
+        '''
         for sprite in self.all_sprites:
             if (color == 'B' and sprite.color == const.BLACK):
                 if sprite.current_position_on_board <= 18:
@@ -111,6 +142,9 @@ class Application():
         return True
 
     def update_pieces(self) -> None:
+        '''
+        One of the main update function that handles the update for every piece on the board.
+        '''
         self.all_sprites = pygame.sprite.Group()
         for piece in self.board.get_pieces():
             self.all_sprites.add(piece)
@@ -119,6 +153,9 @@ class Application():
         self.all_sprites.draw(self.screen)
 
     def show_final_screen(self) -> None:
+        '''
+        Endgame screen. Horribly written code but it fulfills its job.
+        '''
         self.clock.tick(60)
         color_ = const.BLACK
         op_color_  = const.WHITE
@@ -176,7 +213,10 @@ class Application():
         
     
     def update(self) -> None:
-        
+        '''
+        The update function which is called to make the game progress. It handles every update that has to be done in the game and
+        any event that can happen during the game.
+        '''
         if self.WIN_TRIGGERED == True:
             self.show_final_screen()
             return
@@ -214,6 +254,10 @@ class Application():
         pygame.display.update()
 
     def get_candidates_triangles_showlight(self, piece, list_candidates) -> list:
+        '''
+        Being given a piece and the positions that can be reached with the rolls, it checks the special conditions that
+        occur whilst playing backgammon.
+        '''
         candidates = set(list_candidates)
         if piece.color == const.BLACK:
             type_piece = 'B'
@@ -241,6 +285,9 @@ class Application():
 
 
     def triangles_showlight(self, piece, list_candidates):
+        '''
+        For user interface. It switches the color of the triangles that can be reached by the currently highlighted piece.
+        '''
         need_to_highlight = self.get_candidates_triangles_showlight(piece, list_candidates)
         triangles = self.board.get_triangles()
         for pos in need_to_highlight:
@@ -249,6 +296,9 @@ class Application():
 
 
     def show_possible_moves(self, piece) -> None:
+        '''
+        Being given a piece, and knowing the rolls, it handles the logic for all the possible moves for that piece.
+        '''
         direction = 1
         if piece.color == const.WHITE:
             direction = -1
@@ -278,6 +328,10 @@ class Application():
         self.triangles_showlight(piece, candidates)
 
     def get_possible_moves(self, piece) -> list:
+        '''
+        Same thing as the previous function, however this is an utilitary method for its virtual instance, so that the AI can generate
+        more easily its succesors.
+        '''
         direction = 1
         if piece.color == const.WHITE:
             direction = -1
@@ -304,7 +358,10 @@ class Application():
                         candidates.append(0)
         return self.get_candidates_triangles_showlight(piece, candidates)
 
-    def check_win_status(self):
+    def check_win_status(self) -> None:
+        '''
+        Checks if the win status was achieved by any player.
+        '''
         no_white_pieces = len([x for x in self.all_sprites if x.color == const.WHITE])
         no_black_pieces = len(self.all_sprites) - no_white_pieces
         
@@ -326,6 +383,9 @@ class Application():
             self.WINNER = 'BLACK'
 
     def move_piece(self, piece, triangle) -> None:
+        '''
+        Moves a piece on the table and eliminates the roll that was used for it.
+        '''
         roll_used = triangle.position_on_board - piece.current_position_on_board
         if roll_used < 0 : roll_used *= -1
         if roll_used in self.rolls: 
@@ -335,13 +395,19 @@ class Application():
         self.board.move_piece(piece.current_position_on_board, triangle.position_on_board)
 
     def reset_highlighted(self) -> None:
+        '''
+        After a piece was deselected, we want to remove all the highlighted pieces, so we created this method for this purpose.
+        '''
         for element in self.currently_highlighted:
             if isinstance(element, Board_triangle):
                 element.switch_highlight()
         self.currently_highlighted = []
         #self.current_piece_selected = None
 
-    def sprite_is_at_turn(self, sprite):
+    def sprite_is_at_turn(self, sprite) -> bool:
+        '''
+        Being given a piece, it returns if it is allowed to move or not.
+        '''
         type_ = 'W'
         if sprite.color == const.BLACK:
             type_ = 'B'
@@ -350,7 +416,11 @@ class Application():
         return False
     
 
-    def satisfy_special_condition(self, sprite):
+    def satisfy_special_condition(self, sprite) -> bool:
+        '''
+        When removing pieces from the board, sometimes if a higher value than all the possible ones is rolled, then it can be
+        used to remove a piece. When this happens we say it satisfies the special condition.
+        '''
         if sprite.color == const.BLACK and len(self.board.frames[0]) > 0 and sprite.current_position_on_board != 0:
             return False
         if sprite.color == const.WHITE and len(self.board.frames[25]) > 0 and sprite.current_position_on_board != 25:
@@ -358,6 +428,9 @@ class Application():
         return True
     
     def button_pressed(self) -> None:
+        '''
+        Logic for the button to roll the dice. Here the players switch turns.
+        '''
         self.start_time_roll = round(time.time() * 1000)
         self.need_to_roll = False
         self.need_to_update_rolls = True
@@ -368,6 +441,13 @@ class Application():
         self.current_piece_selected = None
 
     def check(self, pos) -> None:
+        '''
+        This method handles the logic for every click that happened during the game. There are three different objects that can be 
+        interacted with:
+            The roll button
+            The pieces
+            The board itself
+        '''
         if self.need_to_roll == True and self.button_roll.rect.collidepoint(pos):
             self.button_pressed()
         else:
@@ -397,6 +477,7 @@ class Application():
                         self.current_piece_selected.got_clicked()
                     self.current_piece_selected = None
 
+# Game Running
 if __name__ == '__main__':
     app = Application(True)
     while True:

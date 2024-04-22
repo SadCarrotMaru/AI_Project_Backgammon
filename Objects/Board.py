@@ -5,12 +5,19 @@ import pygame
 import soft_config_const as const
 class Board(): 
     def __init__(self, initial_board = const.PIECES_POSITION_INITIAL) -> None:
+        '''
+        This class contains everything regarding the board. It handles the generation of the pieces, their layout and the generation
+        of the triangles.
+        '''
         self.frames = copy.deepcopy(initial_board)
         self.pieces=[]
         self.board_triangles = []
         self.initialize_board()
     
     def initialize_board(self) -> None:
+        '''
+        It is called when the game to construct everything.
+        '''
         for i  in range(0,26):
             before = 0
             for element in self.frames[i]:
@@ -68,6 +75,9 @@ class Board():
             self.board_triangles.append(Board_triangle((x1,y1),(x2,y2),(x3,y3),triangle_color, i))
 
     def update_board(self) -> None:
+        '''
+        Based on the current layout of the pieces, it reconstructs them.
+        '''
         self.pieces = []
         for i  in range(1,25):
             before = 0
@@ -100,6 +110,9 @@ class Board():
                 y+=const.RADIUS*2
     
     def move_piece(self, source, destination) -> None:
+        '''
+        Handles the logic for the move of a piece on the board
+        '''
         piece_color = self.frames[source][0]
         if destination != 0 and destination != 25:
             if len(self.frames[destination]) == 1 and self.frames[destination][0] != self.frames[source][0]:
